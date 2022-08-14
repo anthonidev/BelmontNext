@@ -1,8 +1,8 @@
-import styled from "@emotion/styled/macro";
-import { NextPage } from "next";
 import { ReactElement } from "react";
-import tw from "twin.macro";
+import AlertManage from "../components/alert/Alert";
 import MainLayout from "../components/layouts/MainLayout";
+import TextAreaMail from "../components/mail/TextAreaMail";
+import { ContainerIndex } from "../components/style/page";
 import type { NextPageWithLayout } from "./_app";
 
 /**
@@ -10,20 +10,25 @@ import type { NextPageWithLayout } from "./_app";
  * @return {JSX.Element}
  */
 
-const Input = tw.input`
-    text-center border h-28
-`;
-const MyDiv = styled.div`
-  background: gold;
-  font-size: 5rem;
-  margin-top: 10px;
-`;
+// const Input = tw.input`
+//     text-center border h-28
+// `;
+// const MyDiv = styled.div`
+//   background: gold;
+//   font-size: 5rem;
+//   margin-top: 10px;
+// `;
 const Home: NextPageWithLayout = (): JSX.Element => {
   return (
-    <div className="">
-      <Input placeholder="box" />
-      <MyDiv>Test Text</MyDiv>
-    </div>
+    <ContainerIndex>
+      <h1 className="my-10 text-center tracking-wider border-b-2 p-2 w-10  text-white font-bold text-3xl">
+        Send Mail
+      </h1>
+      <TextAreaMail />
+      <div className="w-full">
+        <AlertManage />
+      </div>
+    </ContainerIndex>
   );
 };
 

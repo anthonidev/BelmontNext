@@ -1,39 +1,82 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-const initialState: authState = {
-  username: undefined,
-  email: undefined,
-  name: undefined,
-  isAuthenticated: false,
+import { getStoreLocal, setStoreLocal } from "../../utils/helpers/helpStore";
+import { AuthState, User } from "../../utils/types/interfaces";
+
+const initialState: AuthState = {
+  access: getStoreLocal("access"),
+  refresh: getStoreLocal("refresh"),
+  isAuthenticated: null,
+  user: {
+    id: 0,
+    email: "",
+    first_name: "",
+    last_name: "",
+    get_full_name: "",
+    get_short_name: "",
+  },
+  loading: false,
 };
 
 export const authSlice = createSlice({
-  name: "auth",
+  name: "authenticated",
   initialState,
   reducers: {
-    signupOk: (state: authState, action: PayloadAction<authState>) => {
-      console.log(action);
-
-      state.username = action.payload.username;
-      state.email = action.payload.email;
-      state.name = action.payload.name;
-      state.isAuthenticated = action.payload.isAuthenticated;
+    login_ok: (state: AuthState, action: PayloadAction<AuthState>) => {
+      setStoreLocal(
+        "access",
+        action.payload.access ? action.payload.access : ""
+      );
+      setStoreLocal(
+        "refresh",
+        action.payload.refresh ? action.payload.refresh : ""
+      );
+      state.isAuthenticated = true;
+      state.access = getStoreLocal("access");
+      state.refresh = getStoreLocal("refresh");
     },
-    signupFail: (state: authState, action: PayloadAction<string>) => {
-      state.username = undefined;
-      state.email = undefined;
-      state.name = undefined;
+    fail_clear: (state: AuthState) => {
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
       state.isAuthenticated = false;
+      state.access = null;
+      state.refresh = null;
+      state.user = null;
+    },
+    on_loading: (state: AuthState) => {
+      state.loading = true;
+    },
+    off_loading: (state: AuthState) => {
+      state.loading = false;
+    },
+    loaded_user: (state: AuthState, action: PayloadAction<User>) => {
+      state.user = action.payload;
+    },
+    fail_user: (state: AuthState) => {
+      state.user = null;
+    },
+    authenticated_ok: (state: AuthState) => {
+      state.isAuthenticated = true;
+    },
+
+    refresh_ok: (state: AuthState, action: PayloadAction<AuthState>) => {
+      setStoreLocal(
+        "access",
+        action.payload.access ? action.payload.access : ""
+      );
+      state.access = getStoreLocal("access");
     },
   },
 });
 
-export const { signupOk, signupFail } = authSlice.actions;
+export const {
+  login_ok,
+  fail_clear,
+  on_loading,
+  off_loading,
+  loaded_user,
+  fail_user,
+  authenticated_ok,
+  refresh_ok,
+} = authSlice.actions;
 
 export default authSlice.reducer;
-
-export interface authState {
-  username: string | undefined;
-  email: string | undefined;
-  name: string | undefined;
-  isAuthenticated: boolean;
-}
