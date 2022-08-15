@@ -29,9 +29,7 @@ const AlertManage = () => {
           onDismiss={HideAlert}
           //   icon={XIcon}
         >
-          <h3 className="text-lg font-medium text-green-700 dark:text-green-800">
-            {alert.msg}
-          </h3>
+          <h3 className="text-lg font-medium ">{alert.msg}</h3>
         </Alert>
       );
     } else {

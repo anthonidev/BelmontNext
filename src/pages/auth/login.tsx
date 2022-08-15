@@ -1,13 +1,15 @@
-import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { ReactElement, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import tw from "twin.macro";
 import AlertManage from "../../components/alert/Alert";
 import InputForm from "../../components/form/InputForm";
+import MainLayout from "../../components/layouts/MainLayout";
 import { Container, Layout } from "../../components/style/page";
 import { loginService } from "../../redux/api/auth";
-import { AppDispatch } from "../../redux/store";
-
+import { AppDispatch, RootState } from "../../redux/store";
 type Props = {};
 
 export interface IFormInput {
@@ -15,10 +17,15 @@ export interface IFormInput {
   password: string;
 }
 
-const PrimaryButton = tw.button`text-white mx-auto   bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:(ring-4 outline-none ring-blue-300)  dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2`;
+const PrimaryButton = tw.button`text-white mx-auto bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:(ring-4 outline-none ring-blue-300)  dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2`;
 
-const login = (props: Props) => {
+const Login = (props: Props) => {
   const dispatch: AppDispatch = useDispatch();
+  const { isAuthenticated, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const { push } = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -26,18 +33,34 @@ const login = (props: Props) => {
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log("probando", data.email, data.password);
     dispatch(loginService(data.email, data.password));
   };
+  useEffect(() => {
+    if (isAuthenticated) push("/belnmont/dashboard");
+  }, [isAuthenticated]);
+
   return (
     <Layout>
       <Container>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className=" max-w-xl border-2 w-full p-5 rounded-2xl flex justify-center flex-col"
+          className={` max-w-xl border-2 w-full p-5 rounded-2xl flex justify-center flex-col ${
+            errors?.email || errors?.password
+              ? "border-red-500"
+              : "border-gray-800"
+          }`}
         >
-          <h1 className="text-center text-2xl text-white">LOGIN JWT</h1>
-          <div>
+          <h1 className="text-center uppercase my-4 text-2xl text-white">
+            Bienvenido
+          </h1>
+
+          <p className="text-center text-gray-400">
+            No tienes una cuenta?
+            <Link href={"/auth/signup"}>
+              <a className="text-indigo-500 ml-2">Registrate</a>
+            </Link>
+          </p>
+          <div className="flex flex-col space-y-4">
             {
               <InputForm
                 title="Email"
@@ -50,7 +73,6 @@ const login = (props: Props) => {
                 error={errors.email ? true : false}
                 label="email"
                 required
-                // pattern={/^[A-Za-z0-9._%+-]+@gmail\.com$/}
               />
             }
             {
@@ -73,7 +95,11 @@ const login = (props: Props) => {
             <a className=" dark:text-blue-400" href="/">
               forgot password?
             </a>
-            <PrimaryButton type="submit">Login</PrimaryButton>
+            {loading ? (
+              <PrimaryButton disabled>Loading...</PrimaryButton>
+            ) : (
+              <PrimaryButton>Ingresar</PrimaryButton>
+            )}
           </div>
         </form>
         <AlertManage />
@@ -82,4 +108,14 @@ const login = (props: Props) => {
   );
 };
 
-export default login;
+Login.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <MainLayout
+      title="Ingresar | Belnmont"
+      content="Iniciar Session en Belnmont"
+    >
+      {page}
+    </MainLayout>
+  );
+};
+export default Login;

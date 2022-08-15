@@ -22,6 +22,7 @@ const MainLayout: React.FC<Props> = ({ title, content, children }) => {
     dispatch(load_user());
     dispatch(refresh());
   }, [dispatch]);
+
   return (
     <>
       <Head>

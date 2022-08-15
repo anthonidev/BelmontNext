@@ -4,6 +4,7 @@ export interface AuthState {
   isAuthenticated: boolean | null;
   user: User | null;
   loading: boolean;
+  redirectConfirmed: boolean;
 }
 
 export interface User {

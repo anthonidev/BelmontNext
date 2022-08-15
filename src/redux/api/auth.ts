@@ -8,6 +8,7 @@ import {
   login_ok,
   off_loading,
   on_loading,
+  redirectConfirmed,
   refresh_ok,
 } from "../slices/authSlice";
 import { AppDispatch } from "../store";
@@ -78,9 +79,8 @@ export const loginService =
         dispatch(setAlert("Bienvenido", AlertType.Success));
       })
       .catch((err) => {
-        console.log(err);
         dispatch(fail_clear());
-        dispatch(setAlert("Credinciales incorectas", AlertType.Error));
+        dispatch(setAlert(err.response.data.detail, AlertType.Error));
       })
       .finally(() => {
         dispatch(off_loading());
@@ -115,54 +115,67 @@ export const refresh = () => async (dispatch: AppDispatch) => {
 
 export const signup =
   (
-    first_name: string,
-    last_name: string,
     email: string,
     password: string,
-    re_password: string
+    re_password: string,
+    acept_terms: boolean
   ) =>
   async (dispatch: AppDispatch) => {
     dispatch(on_loading());
+    if (acept_terms) {
+      if (password === re_password) {
+        await axios
+          .post(
+            `${process.env.NEXT_PUBLIC_API_URL}/auth/users/`,
+            JSON.stringify({
+              email,
+              password,
+              re_password,
+            }),
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((res) => {
+            dispatch(redirectConfirmed());
+            dispatch(
+              setAlert("Usuario creado correctamente", AlertType.Success)
+            );
+            setAlert(
+              "Te enviamos un correo, por favor activa tu cuenta.",
+              AlertType.Info
+            );
+          })
+          .catch((err) => {
+            console.log(err);
 
-    await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/users/`,
-        JSON.stringify({
-          first_name,
-          last_name,
-          email,
-          password,
-          re_password,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        // dispatch(setAlert("Usuario creado correctamente", "green"));
-        // dispatch(
-        //   setAlert(
-        //     "Te enviamos un correo, por favor activa tu cuenta.",
-        //     "green"
-        //   )
-        // );
-      })
-      .catch((err) => {
-        if (err.response.data.password) {
-          err.response.data.password.map((error: string) => {
-            // dispatch(setAlert(error, "red"));
+            if (err.response.data.password) {
+              err.response.data.password.map((error: string) => {
+                dispatch(setAlert(error, AlertType.Error));
+              });
+            } else if (err.response.data.email) {
+              err.response.data.email.map((error: string) => {
+                dispatch(setAlert(error, AlertType.Error));
+              });
+            } else {
+              dispatch(
+                setAlert(
+                  "Error de conexión, intente más tarde",
+                  AlertType.Error
+                )
+              );
+            }
           });
-        } else if (err.response.data.email) {
-          err.response.data.email.map((error: string) => {
-            // dispatch(setAlert(error, "red"));
-          });
-        } else {
-          //   dispatch(setAlert("Error al crear usuario", "red"));
-        }
-      });
-
+      } else {
+        dispatch(setAlert("Las contraseñas no coinciden", AlertType.Error));
+      }
+    } else {
+      dispatch(
+        setAlert("Debes aceptar los terminos y condiciones", AlertType.Warning)
+      );
+    }
     dispatch(off_loading());
   };
 export const activate =

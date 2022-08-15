@@ -15,6 +15,7 @@ const initialState: AuthState = {
     get_short_name: "",
   },
   loading: false,
+  redirectConfirmed: false,
 };
 
 export const authSlice = createSlice({
@@ -57,6 +58,9 @@ export const authSlice = createSlice({
     authenticated_ok: (state: AuthState) => {
       state.isAuthenticated = true;
     },
+    redirectConfirmed: (state: AuthState) => {
+      state.redirectConfirmed = true;
+    },
 
     refresh_ok: (state: AuthState, action: PayloadAction<AuthState>) => {
       setStoreLocal(
@@ -77,6 +81,7 @@ export const {
   fail_user,
   authenticated_ok,
   refresh_ok,
+  redirectConfirmed,
 } = authSlice.actions;
 
 export default authSlice.reducer;
