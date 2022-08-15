@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import { useRouter } from "next/router";
 import { AppDispatch, RootState } from "../../redux/store";
-import { signup } from "../../redux/api/auth";
+import { signupService } from "../../redux/api/auth";
 import MainLayout from "../../components/layouts/MainLayout";
 import { Container, Layout } from "../../components/style/page";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -26,7 +26,12 @@ const Signup = () => {
   } = useForm<IFormSignUp>();
   const onSubmit: SubmitHandler<IFormSignUp> = (data) => {
     dispatch(
-      signup(data.email, data.password, data.re_password, data.acept_terms)
+      signupService(
+        data.email,
+        data.password,
+        data.re_password,
+        data.acept_terms
+      )
     );
   };
 

@@ -25,7 +25,6 @@ type PropsSignupForm = {
   maxLength?: number;
   minLength?: number;
 };
-type props = {};
 const SignupInputForm = ({
   title,
   type,

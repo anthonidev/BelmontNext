@@ -10,22 +10,21 @@ import MainLayout from "../../components/layouts/MainLayout";
 import { Container, Layout } from "../../components/style/page";
 import { loginService } from "../../redux/api/auth";
 import { AppDispatch, RootState } from "../../redux/store";
-type Props = {};
+import ClipLoader from "react-spinners/ClipLoader";
 
 export interface IFormInput {
   email: string;
   password: string;
 }
 
-const PrimaryButton = tw.button`text-white mx-auto bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:(ring-4 outline-none ring-blue-300)  dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2`;
+const PrimaryButton = tw.button`w-32 text-white mx-auto bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:(ring-4 outline-none ring-blue-300)  dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2`;
 
-const Login = (props: Props) => {
+const Login = () => {
   const dispatch: AppDispatch = useDispatch();
   const { isAuthenticated, loading } = useSelector(
     (state: RootState) => state.auth
   );
   const { push } = useRouter();
-
   const {
     register,
     handleSubmit,
@@ -44,7 +43,7 @@ const Login = (props: Props) => {
       <Container>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` max-w-xl border-2 w-full p-5 rounded-2xl flex justify-center flex-col ${
+          className={` max-w-xl border-2 w-full p-3 rounded-2xl flex justify-center flex-col ${
             errors?.email || errors?.password
               ? "border-red-500"
               : "border-gray-800"
@@ -54,10 +53,10 @@ const Login = (props: Props) => {
             Bienvenido
           </h1>
 
-          <p className="text-center text-gray-400">
+          <p className="text-center text-gray-400 text-xs">
             No tienes una cuenta?
             <Link href={"/auth/signup"}>
-              <a className="text-indigo-500 ml-2">Registrate</a>
+              <a className="text-indigo-500 font-bold ml-2">Registrate</a>
             </Link>
           </p>
           <div className="flex flex-col space-y-4">
@@ -92,11 +91,18 @@ const Login = (props: Props) => {
           </div>
 
           <div className="flex justify-between mt-5 items-center">
-            <a className=" dark:text-blue-400" href="/">
-              forgot password?
+            <a className=" dark:text-indigo-500  text-sm" href="/">
+              ¿Olvidaste tu contraseña?
             </a>
             {loading ? (
-              <PrimaryButton disabled>Loading...</PrimaryButton>
+              <PrimaryButton disabled>
+                <ClipLoader
+                  className="w-auto "
+                  color="#ffffff"
+                  loading={loading}
+                  size={15}
+                />
+              </PrimaryButton>
             ) : (
               <PrimaryButton>Ingresar</PrimaryButton>
             )}

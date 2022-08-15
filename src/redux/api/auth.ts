@@ -1,18 +1,20 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { getStoreLocal } from "../../utils/helpers/helpStore";
 import {
-  authenticated_ok,
-  fail_clear,
-  fail_user,
-  loaded_user,
-  login_ok,
-  off_loading,
-  on_loading,
+  loginOk,
+  failClear,
+  loadingOn,
+  loadingOff,
+  loadedUser,
+  userFail,
+  authenticatedOk,
+  refreshOk,
   redirectConfirmed,
-  refresh_ok,
 } from "../slices/authSlice";
 import { AppDispatch } from "../store";
 import { setAlert } from "./alert";
+
 enum AlertType {
   Success = "success",
   Error = "failure",
@@ -21,7 +23,7 @@ enum AlertType {
   Gray = "gray",
 }
 
-export const check_authenticated = () => async (dispatch: AppDispatch) => {
+const checkAuthenticatedService = () => async (dispatch: AppDispatch) => {
   if (getStoreLocal("access")) {
     await axios
       .post(
@@ -35,16 +37,16 @@ export const check_authenticated = () => async (dispatch: AppDispatch) => {
         }
       )
       .then((res) => {
-        dispatch(authenticated_ok());
+        dispatch(authenticatedOk());
       })
       .catch((err) => {
-        dispatch(fail_clear());
+        dispatch(failClear());
         console.log(err);
       });
   }
 };
 
-export const load_user = () => async (dispatch: AppDispatch) => {
+const loadUserService = () => async (dispatch: AppDispatch) => {
   if (getStoreLocal("access")) {
     await axios
       .get(`${process.env.NEXT_PUBLIC_API_URL}/auth/users/me/`, {
@@ -54,19 +56,19 @@ export const load_user = () => async (dispatch: AppDispatch) => {
         },
       })
       .then((res) => {
-        dispatch(loaded_user(res.data));
+        dispatch(loadedUser(res.data));
       })
       .catch((err) => {
-        dispatch(fail_user());
+        dispatch(userFail());
       });
   } else {
-    dispatch(fail_user());
+    dispatch(userFail());
   }
 };
 
-export const loginService =
+const loginService =
   (email: string, password: string) => async (dispatch: AppDispatch) => {
-    dispatch(on_loading());
+    dispatch(loadingOn());
 
     await axios
       .post(
@@ -75,19 +77,26 @@ export const loginService =
         { headers: { "Content-Type": "application/json" } }
       )
       .then((res) => {
-        dispatch(login_ok(res.data));
+        dispatch(loginOk(res.data));
         dispatch(setAlert("Bienvenido", AlertType.Success));
       })
       .catch((err) => {
-        dispatch(fail_clear());
-        dispatch(setAlert(err.response.data.detail, AlertType.Error));
+        console.log(err.code);
+
+        dispatch(failClear());
+        if (err.code !== "ERR_NETWORK")
+          dispatch(setAlert(err.response.data.detail, AlertType.Error));
+        else
+          dispatch(
+            setAlert("Error de conexión, intentar más tarde", AlertType.Error)
+          );
       })
       .finally(() => {
-        dispatch(off_loading());
+        dispatch(loadingOff());
       });
   };
 
-export const refresh = () => async (dispatch: AppDispatch) => {
+const refreshService = () => async (dispatch: AppDispatch) => {
   if (getStoreLocal("refresh")) {
     await axios
       .post(
@@ -103,26 +112,30 @@ export const refresh = () => async (dispatch: AppDispatch) => {
         }
       )
       .then((res) => {
-        dispatch(refresh_ok(res.data));
+        dispatch(refreshOk(res.data));
       })
       .catch((err) => {
-        dispatch(fail_clear());
+        dispatch(failClear());
       });
   } else {
-    dispatch(fail_clear());
+    dispatch(failClear());
   }
 };
 
-export const signup =
+const signupService =
   (
     email: string,
     password: string,
+    // eslint-disable-next-line camelcase
     re_password: string,
+    // eslint-disable-next-line camelcase
     acept_terms: boolean
   ) =>
   async (dispatch: AppDispatch) => {
-    dispatch(on_loading());
+    dispatch(loadingOn());
+    // eslint-disable-next-line camelcase
     if (acept_terms) {
+      // eslint-disable-next-line camelcase
       if (password === re_password) {
         await axios
           .post(
@@ -130,6 +143,7 @@ export const signup =
             JSON.stringify({
               email,
               password,
+              // eslint-disable-next-line camelcase
               re_password,
             }),
             {
@@ -176,12 +190,12 @@ export const signup =
         setAlert("Debes aceptar los terminos y condiciones", AlertType.Warning)
       );
     }
-    dispatch(off_loading());
+    dispatch(loadingOff());
   };
-export const activate =
+const activateService =
   (uid: string | string[] | undefined, token: string | string[] | undefined) =>
   async (dispatch: AppDispatch) => {
-    dispatch(on_loading());
+    dispatch(loadingOn());
     await axios
       .post(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/users/activation/`,
@@ -201,17 +215,16 @@ export const activate =
       .catch((err) => {
         // dispatch(setAlert("Error al crear cuenta", "red"));
       });
-    dispatch(off_loading());
+    dispatch(loadingOff());
   };
 
-export const logout = () => (dispatch: AppDispatch) => {
-  dispatch(fail_clear());
+const logoutService = () => (dispatch: AppDispatch) => {
+  dispatch(failClear());
   //   dispatch(setAlert("Succesfully logged out", "green"));
 };
-
-export const reset_password =
+const resetPasswordService =
   (email: string) => async (dispatch: AppDispatch) => {
-    dispatch(on_loading());
+    dispatch(loadingOn());
     await axios
       .post(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/users/reset_password/`,
@@ -228,19 +241,22 @@ export const reset_password =
       .catch((err) => {
         // dispatch(setAlert("Error en el servidor, intente mas tarde", "red"));
       });
-    dispatch(off_loading());
+    dispatch(loadingOff());
   };
 
-export const reset_password_confirm =
+const resetPasswordConfirm =
   (
     uid: string | string[] | undefined,
     token: string | string[] | undefined,
+    // eslint-disable-next-line camelcase
     new_password: string,
+    // eslint-disable-next-line camelcase
     re_new_password: string
   ) =>
   async (dispatch: AppDispatch) => {
-    dispatch(on_loading());
+    dispatch(loadingOn());
 
+    // eslint-disable-next-line camelcase
     if (new_password === re_new_password) {
       await axios
         .post(
@@ -248,7 +264,9 @@ export const reset_password_confirm =
           JSON.stringify({
             uid,
             token,
+            // eslint-disable-next-line camelcase
             new_password,
+            // eslint-disable-next-line camelcase
             re_new_password,
           }),
           { headers: { "Content-Type": "application/json" } }
@@ -262,5 +280,17 @@ export const reset_password_confirm =
     } else {
       //   dispatch(setAlert("Las contraseñas no coinciden", "red"));
     }
-    dispatch(off_loading());
+    dispatch(loadingOff());
   };
+
+export {
+  checkAuthenticatedService,
+  loadUserService,
+  loginService,
+  refreshService,
+  signupService,
+  activateService,
+  resetPasswordService,
+  resetPasswordConfirm,
+  logoutService,
+};

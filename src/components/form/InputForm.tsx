@@ -25,7 +25,6 @@ type PropsInputForm = {
   maxLength?: number;
   minLength?: number;
 };
-type props = {};
 const InputForm = ({
   title,
   type,

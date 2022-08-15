@@ -30,3 +30,13 @@ yarn-error.log*
 next-env.d.ts
 # vercel
 .vercel
+
+/__mocks__
+/__test__
+/.babelrc
+
+/.eslintrc.js
+/jest.config.js
+/jest.setup.js
+/postcss.config.js
+/tailwind.config.js
