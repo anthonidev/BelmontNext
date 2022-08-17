@@ -2,3 +2,96 @@ Coorencia@gmail.com
 loading
 
 Ga96qXYeoXjpPT#J
+AEaaaWW333
+CorreoPrueba22@gmail.com
+
+
+
+Autenticación (JWT) = {
+    * Iniciar Sesión {
+        ruta: '/auth/login'
+        campos requeridos :
+            - email. (input type="email")
+            - password. (input type="password")
+        flujo :
+            - validar campos requeridos.
+            - redireccionar a la pagina de dashboard si el usuario es valido.
+        requerimientos funcionales R1:
+            ~ general :
+                - El formulario DEBE tener los campos "Email" y "Contraseña", además debe tener la opción "¿Olvidaste tu contraseña? y ver contraseña.
+                - El formulario DEBE tener un botón "Iniciar Sesión".
+                - La pagina DEBE tener un link de "¿No tienes una cuenta? Registrate".
+                - Se DEBE guardar las keys del usuario en el localStore. (keys: "access", "refresh")
+            ~ validaciones :
+                - El campo "Email" debe tener un formato de correo electrónico valido.
+                - El campo "Contraseña" debe tener una longitud minima de 8 caracteres.
+            ~ redirecciones :
+                - Si el usuario es valido, debe redireccionar a la pagina de dashboard.
+                - Si el usuario no es valido, debe mostrar un mensaje de error.
+            ~ mensajes :
+                - Si el usuario es valido, debe mostrar un mensaje . (mensaje: "Bienvenido {nombre}")
+                - Si el usuario no es valido, debe mostrar un mensaje de error. (mensaje: "La combination de credenciales no tiene una cuenta activa")
+                - Si hay un error de conexión con el servidor, debe mostrar un mensaje de error. (mensaje: "Error de conexión, intentar más tarde")
+
+        requerimientos funcionales R2:
+            ~ general :
+                - Al estar inactivo por mas de {n} minutos DEBE de solicitiar nuevamente la autenticación.
+                - Si cierra la pestana de navegador DEBE de borrar las keys del usuario del localStore.
+    }
+    * Cerrar Sesión {
+        ruta: '/dashboard/***'
+        flujo :
+            - redireccionar a la pagina de login
+        requerimientos funcionales R1:
+            ~ general :
+                - El usuario DEBE tener la opción de "Cerrar Sesión".
+                - Al hacer click en "Cerrar Sesión" se DEBE eliminar las keys del usuario del localStore.
+            ~ mensajes :
+                - Se DEBE mostrar una mensaje al usuario que se ha cerrado la sesión. (mensaje: "Sesión cerrada correctamente")
+                - Si hay un error de conexión con el servidor, debe mostrar un mensaje de error. (mensaje: "Error de conexión, intentar más tarde")
+    }
+    * Register {
+        ruta: '/auth/signup',
+        campos requeridos :
+            - email. (input type="email").
+            - password .(input type="password")
+            - re_password . (input type="password")
+            - Accept terminos y conficiones. (input type="checkbox")
+        flujo :
+            - validar campos requeridos y que coincidan el password y re_password
+            - El servidor envia un correo al usuario con un link de confirmación.
+            - redireccionar a la pagina de confirmacion de registro
+        requerimientos funcionales R1:
+            ~ general :
+                - El formulario DEBE tener los campos "Email", "Contraseña", "Repetir Contraseña", "Aceptar terminos y condiciones" y "Registrar".
+                - El formulario DEBE tener un botón "Registrar".
+                - La pagina DEBE tener un link de "¿Ya tienes una cuenta? Inicia Sesión".
+                - Los campos password y re_password DEBE tener un botón que muestre la contraseña. (botón: "Icono de ojo abierto al lado del campo")
+                - Los campos password y re_password DEBE tener un botón que oculte la contraseña. (botón: "Icono de ojo cerrado al lado del campo")
+                - Solo se DEBE mostrar un botón de "Icono de ojo abierto al lado del campo" si el campo password esta visible.
+                - Solo se DEBE mostrar un botón de "Icono de ojo cerrado al lado del campo" si el campo password esta oculto.
+                - La pagina DEBE tener un link de "¿Ya tienes una cuenta? Inicia Sesión".
+            ~ validaciones :
+                - El campo "Email" debe tener un formato de correo electrónico valido.
+                - El campo "Contraseña" debe tener una longitud minima de 8 caracteres y debe incluir una mayuscula, una minuscula, un caracter y un numero.
+                - El campo "Repetir Contraseña" debe tener una longitud minima de 8 caracteres y debe incluir una mayuscula, una minuscula, un caracter y un numero.
+                - El campo "Contraseña" debe coincidir con el campo "Repetir Contraseña".
+                - El campo "Aceptar terminos y condiciones" debe estar marcado.
+            ~ redirecciones :
+                - Si el registro es valido, debe redireccionar a la pagina de confirmacion de registro.
+            ~ mensajes :
+                - Si se registra correctamente se DEBE mostrar un mensaje de confirmación. (mensaje: "Te enviamos un correo, por favor activa tu cuenta")
+                - Si las contraseñas no coinciden se DEBE mostrar un mensaje de error. (mensaje: "Las contraseñas no coinciden")
+                - Si los terminos y condiciones no estan marcados se DEBE mostrar un mensaje de error. (mensaje: "Debes aceptar los terminos y condiciones")
+                - Si hay un error de conexión con el servidor, debe mostrar un mensaje de error. (mensaje: "Error de conexión, intentar más tarde")
+    }
+    * Confirmar Registro {
+        ruta: '/auth/signup/confirm',
+        requerimientos funcionales R1:
+            ~ general :
+                - Se DEBE mostrar un texto que diga "Se ha enviado un correo para confirmar tu cuenta, por favor revise su bandeja de entrada".
+        requerimientos funcionales R2:
+            ~ general :
+                - Se DEBE mostrar un boton que diga "Si no encuentras el correo, puedes volver a solicitarlo".
+    }
+}

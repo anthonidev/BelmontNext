@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import ClipLoader from "react-spinners/ClipLoader";
+
 import tw from "twin.macro";
 import AlertManage from "../../components/alert/Alert";
 import InputForm from "../../components/form/InputForm";
@@ -10,7 +12,6 @@ import MainLayout from "../../components/layouts/MainLayout";
 import { Container, Layout } from "../../components/style/page";
 import { loginService } from "../../redux/api/auth";
 import { AppDispatch, RootState } from "../../redux/store";
-import ClipLoader from "react-spinners/ClipLoader";
 
 export interface IFormInput {
   email: string;
@@ -35,7 +36,7 @@ const Login = () => {
     dispatch(loginService(data.email, data.password));
   };
   useEffect(() => {
-    if (isAuthenticated) push("/belnmont/dashboard");
+    if (isAuthenticated) push("/dashboard");
   }, [isAuthenticated]);
 
   return (
@@ -104,7 +105,7 @@ const Login = () => {
                 />
               </PrimaryButton>
             ) : (
-              <PrimaryButton>Ingresar</PrimaryButton>
+              <PrimaryButton type="submit">Ingresar</PrimaryButton>
             )}
           </div>
         </form>

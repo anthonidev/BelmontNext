@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getStoreLocal, setStoreLocal } from "../../utils/helpers/helpStore";
+import {
+  getAuthenticated,
+  getStoreLocal,
+  setStoreLocal,
+} from "../../utils/helpers/helpStore";
 import { AuthState, User } from "../../utils/types/interfaces";
 
 const initialState: AuthState = {
   access: getStoreLocal("access"),
   refresh: getStoreLocal("refresh"),
-  isAuthenticated: null,
+  isAuthenticated: getAuthenticated("access"),
   user: {
     id: 0,
     email: "",
-    first_name: "",
-    last_name: "",
-    get_full_name: "",
-    get_short_name: "",
   },
   loading: false,
   redirectConfirmed: false,

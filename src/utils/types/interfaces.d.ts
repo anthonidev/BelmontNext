@@ -11,10 +11,6 @@ export interface AuthState {
 export interface User {
   id: number;
   email: string;
-  first_name: string;
-  last_name: string;
-  get_full_name: string;
-  get_short_name: string;
 }
 export enum AlertType {
   Success = "success",

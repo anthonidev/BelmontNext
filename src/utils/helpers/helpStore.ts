@@ -24,4 +24,13 @@ const setStoreLocal = (item: string, payload: string) => {
   return null;
 };
 
-export { getStoreLocal, removeStoreLocal, setStoreLocal };
+const getAuthenticated = (item: string) => {
+  if (typeof localStorage !== "undefined") {
+    if (localStorage.getItem(item)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export { getStoreLocal, removeStoreLocal, setStoreLocal, getAuthenticated };

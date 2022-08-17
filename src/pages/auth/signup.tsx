@@ -12,9 +12,10 @@ import { PrimaryButton } from "../../components/button/buttonSltyle";
 import Link from "next/link";
 import AlertManage from "../../components/alert/Alert";
 import { IFormSignUp } from "../../utils/types/forms";
+import { ClipLoader } from "react-spinners";
 
 const Signup = () => {
-  const { loading, redirectConfirmed } = useSelector(
+  const { loading, redirectConfirmed, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
   const dispatch: AppDispatch = useDispatch();
@@ -38,7 +39,9 @@ const Signup = () => {
   useEffect(() => {
     if (redirectConfirmed) push("/auth/confirm");
   }, [redirectConfirmed]);
-
+  useEffect(() => {
+    if (isAuthenticated) push("/dashboard");
+  }, [isAuthenticated]);
   return (
     <Layout>
       <Container>
@@ -53,10 +56,10 @@ const Signup = () => {
           <h1 className="text-center uppercase my-4 text-2xl text-white ">
             Registrate
           </h1>
-          <p className="text-center text-gray-400">
-            ya tienes una cuenta?
+          <p className="text-center text-gray-400 text-xs">
+            ¿Ya tienes una cuenta?
             <Link href={"/auth/login"}>
-              <a className="text-indigo-500 ml-2">Ingresar</a>
+              <a className="text-indigo-500 ml-2">Inicia Sesión</a>
             </Link>
           </p>
           <div className="flex flex-col space-y-4">
@@ -122,8 +125,16 @@ const Signup = () => {
                 <a className="ml-1 text-indigo-500">terminos y condiciones</a>
               </Link>
             </p>
+
             {loading ? (
-              <PrimaryButton disabled>Cargando...</PrimaryButton>
+              <PrimaryButton disabled>
+                <ClipLoader
+                  className="w-auto "
+                  color="#ffffff"
+                  loading={loading}
+                  size={15}
+                />
+              </PrimaryButton>
             ) : (
               <PrimaryButton type="submit">Registrar</PrimaryButton>
             )}

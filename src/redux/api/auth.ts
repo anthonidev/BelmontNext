@@ -41,7 +41,6 @@ const checkAuthenticatedService = () => async (dispatch: AppDispatch) => {
       })
       .catch((err) => {
         dispatch(failClear());
-        console.log(err);
       });
   }
 };
@@ -81,8 +80,6 @@ const loginService =
         dispatch(setAlert("Bienvenido", AlertType.Success));
       })
       .catch((err) => {
-        console.log(err.code);
-
         dispatch(failClear());
         if (err.code !== "ERR_NETWORK")
           dispatch(setAlert(err.response.data.detail, AlertType.Error));
@@ -163,20 +160,27 @@ const signupService =
             );
           })
           .catch((err) => {
-            console.log(err);
-
-            if (err.response.data.password) {
-              err.response.data.password.map((error: string) => {
-                dispatch(setAlert(error, AlertType.Error));
-              });
-            } else if (err.response.data.email) {
-              err.response.data.email.map((error: string) => {
-                dispatch(setAlert(error, AlertType.Error));
-              });
+            if (err.response.status === 400) {
+              if (err.response.data.password) {
+                err.response.data.password.map((error: string) => {
+                  dispatch(setAlert(error, AlertType.Error));
+                });
+              } else if (err.response.data.email) {
+                err.response.data.email.map((error: string) => {
+                  dispatch(setAlert(error, AlertType.Error));
+                });
+              } else {
+                dispatch(
+                  setAlert(
+                    "Comuniquese con el administrador  ",
+                    AlertType.Error
+                  )
+                );
+              }
             } else {
               dispatch(
                 setAlert(
-                  "Error de conexión, intente más tarde",
+                  "Error de conexión, intentar más tarde",
                   AlertType.Error
                 )
               );
@@ -220,7 +224,7 @@ const activateService =
 
 const logoutService = () => (dispatch: AppDispatch) => {
   dispatch(failClear());
-  //   dispatch(setAlert("Succesfully logged out", "green"));
+  dispatch(setAlert("se ha cerrado sesión correctamente", AlertType.Info));
 };
 const resetPasswordService =
   (email: string) => async (dispatch: AppDispatch) => {

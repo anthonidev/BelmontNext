@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import React, { ReactElement, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../redux/store";
-import { activateService } from "../../../redux/api/auth";
 import { CheckCircleIcon } from "@heroicons/react/solid";
-import MainLayout from "../../../components/layouts/MainLayout";
+import { AppDispatch, RootState } from "../../../../redux/store";
+import { activateService } from "../../../../redux/api/auth";
+import MainLayout from "../../../../components/layouts/MainLayout";
 
 const Token = () => {
   const [activated, setActivated] = useState(false);
