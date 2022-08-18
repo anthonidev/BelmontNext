@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -8,6 +8,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import tw from "twin.macro";
 import AlertManage from "../../components/alert/Alert";
 import InputForm from "../../components/form/InputForm";
+import ShowPassword from "../../components/form/ShowPassword";
 import MainLayout from "../../components/layouts/MainLayout";
 import { Container, Layout } from "../../components/style/page";
 import { loginService } from "../../redux/api/auth";
@@ -22,6 +23,7 @@ const PrimaryButton = tw.button`w-32 text-white mx-auto bg-gradient-to-br from-p
 
 const Login = () => {
   const dispatch: AppDispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
   const { isAuthenticated, loading } = useSelector(
     (state: RootState) => state.auth
   );
@@ -75,20 +77,28 @@ const Login = () => {
                 required
               />
             }
-            {
-              <InputForm
-                title="Password"
-                id="password"
-                type="password"
-                placeholder="your password"
-                register={register}
-                errors={errors}
-                htmlForm="password"
-                error={errors.password ? true : false}
-                label="password"
-                required
-              />
-            }
+            <div className="relative">
+              {
+                <InputForm
+                  title="Password"
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="your password"
+                  register={register}
+                  errors={errors}
+                  htmlForm="password"
+                  error={errors.password ? true : false}
+                  label="password"
+                  required
+                />
+              }
+              {
+                <ShowPassword
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
+                />
+              }
+            </div>
           </div>
 
           <div className="flex justify-between mt-5 items-center">

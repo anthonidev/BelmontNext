@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import { useRouter } from "next/router";
@@ -13,11 +13,14 @@ import Link from "next/link";
 import AlertManage from "../../components/alert/Alert";
 import { IFormSignUp } from "../../utils/types/forms";
 import { ClipLoader } from "react-spinners";
+import ShowPassword from "../../components/form/ShowPassword";
 
 const Signup = () => {
   const { loading, redirectConfirmed, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch: AppDispatch = useDispatch();
   const { push } = useRouter();
   const {
@@ -77,40 +80,56 @@ const Signup = () => {
                 required
               />
             }
-            {
-              <SignupInputForm
-                title="Contraseña"
-                id="password"
-                type="password"
-                placeholder="contraseña"
-                register={register}
-                errors={errors}
-                htmlForm="password"
-                error={errors.password ? true : false}
-                label="password"
-                minLength={8}
-                required
-                pattern={/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/}
-              />
-            }
+            <div className="relative">
+              {
+                <SignupInputForm
+                  title="Contraseña"
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="contraseña"
+                  register={register}
+                  errors={errors}
+                  htmlForm="password"
+                  error={errors.password ? true : false}
+                  label="password"
+                  minLength={8}
+                  required
+                  pattern={/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/}
+                />
+              }
+              {
+                <ShowPassword
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
+                />
+              }
+            </div>
 
             {/* 123Ab234 Travis@gmail.com */}
-            {
-              <SignupInputForm
-                title="Repetir contraseña"
-                id="re_password"
-                type="password"
-                placeholder="repetir contraseña"
-                register={register}
-                errors={errors}
-                htmlForm="re_password"
-                error={errors.re_password ? true : false}
-                label="re_password"
-                minLength={8}
-                pattern={/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/}
-                required
-              />
-            }
+            <div className="relative">
+              {
+                <SignupInputForm
+                  title="Repetir contraseña"
+                  id="re_password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="repetir contraseña"
+                  register={register}
+                  errors={errors}
+                  htmlForm="re_password"
+                  error={errors.re_password ? true : false}
+                  label="re_password"
+                  minLength={8}
+                  pattern={/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/}
+                  required
+                />
+              }
+              {
+                <ShowPassword
+                  showPassword={showConfirmPassword}
+                  setShowPassword={setShowConfirmPassword}
+                />
+              }
+            </div>
           </div>
           <div className="flex justify-between mt-5 items-center">
             <input

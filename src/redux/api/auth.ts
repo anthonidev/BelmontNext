@@ -228,6 +228,8 @@ const logoutService = () => (dispatch: AppDispatch) => {
 };
 const resetPasswordService =
   (email: string) => async (dispatch: AppDispatch) => {
+    console.log(email);
+
     dispatch(loadingOn());
     await axios
       .post(
@@ -240,15 +242,19 @@ const resetPasswordService =
         }
       )
       .then((res) => {
-        // dispatch(setAlert("Te enviamos un correo, revisa tu bandeja", "green"));
+        console.log(res);
+
+        dispatch(setAlert("Se ha enviado un correo", AlertType.Info));
       })
       .catch((err) => {
-        // dispatch(setAlert("Error en el servidor, intente mas tarde", "red"));
+        dispatch(
+          setAlert("Error de conexión, intentar más tarde", AlertType.Error)
+        );
       });
     dispatch(loadingOff());
   };
 
-const resetPasswordConfirm =
+const resetPasswordConfirmService =
   (
     uid: string | string[] | undefined,
     token: string | string[] | undefined,
@@ -276,13 +282,18 @@ const resetPasswordConfirm =
           { headers: { "Content-Type": "application/json" } }
         )
         .then((res) => {
-          //   dispatch(setAlert("Tu clave ha sido cambiada con exito", "green"));
+          setAlert(
+            "Te enviamos un correo, por favor activa tu cuenta.",
+            AlertType.Info
+          );
         })
         .catch((err) => {
-          //   dispatch(setAlert("Error en el servidor", "red"));
+          dispatch(
+            setAlert("Comuniquese con el administrador  ", AlertType.Error)
+          );
         });
     } else {
-      //   dispatch(setAlert("Las contraseñas no coinciden", "red"));
+      dispatch(setAlert("Las Contrase;as no coinciden  ", AlertType.Error));
     }
     dispatch(loadingOff());
   };
@@ -295,6 +306,6 @@ export {
   signupService,
   activateService,
   resetPasswordService,
-  resetPasswordConfirm,
+  resetPasswordConfirmService,
   logoutService,
 };

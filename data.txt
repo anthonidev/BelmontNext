@@ -94,4 +94,65 @@ Autenticación (JWT) = {
             ~ general :
                 - Se DEBE mostrar un boton que diga "Si no encuentras el correo, puedes volver a solicitarlo".
     }
+    * Activar Cuenta {
+        ruta: '/auth/activate/:uid/:token',
+        requerimientos funcionales R1:
+            ~ general :
+                - Si el token es valido, debe activar la cuenta del usuario.
+                - Si el token no es valido, debe mostrar un mensaje de error.
+                - Si el token es valido, debe mostrar un mensaje de confirmación. (mensaje: "Cuenta activada correctamente")
+                - Si hay un error de conexión con el servidor, debe mostrar un mensaje de error. (mensaje: "Error de conexión, intentar más tarde")
+                - Redireccionar a la pagina de login.
+    }
+    * Reset Password {
+        ruta: '/auth/reset',
+        campos requeridos :
+            - email. (input type="email").
+        flujo :
+            - El servidor envia un correo al usuario con un link de reseteo de contraseña.
+            - redireccionar a la pagina de confirmacion de reseteo de contraseña
+        requerimientos funcionales R1:
+            ~ general :
+                - El formulario DEBE tener los campos "Email" y "Enviar".
+                - El formulario DEBE tener un botón "Enviar".
+                - La pagina DEBE tener un link de "¿Ya tienes una cuenta? Inicia Sesión".
+            ~ validaciones :
+                - El campo "Email" debe tener un formato de correo electrónico valido.
+            ~ redirecciones :
+                - Si el reseteo de contraseña es valido, debe redireccionar a la pagina de confirmacion de reseteo de contraseña.
+            ~ mensajes :
+                - Si se resetea correctamente se DEBE mostrar un mensaje de confirmación. (mensaje: "Te enviamos un correo, por favor revisa tu bandeja de entrada")
+                - Si hay un error de conexión con el servidor, debe mostrar un mensaje de error. (mensaje: "Error de conexión, intentar más tarde")
+    }
+    * Confirmar Reset Password {
+        ruta: '/auth/reset/confirm',
+        requerimientos funcionales R1:
+            ~ general :
+                - Se DEBE mostrar un texto que diga "Se ha enviado un correo para resetear tu contraseña, por favor revise su bandeja de entrada".
+        requerimientos funcionales R2:
+            ~ general :
+                - Se DEBE mostrar un boton que diga "Si no encuentras el correo, puedes volver a solicitarlo".
+    }
+    * Reset Password {
+        ruta: '/auth/reset/:uid/:token',
+        campos requeridos :
+            - new_password. (input type="password").
+            - re_new_password. (input type="password").
+        flujo :
+            - El servidor envia un correo al usuario con un link de reseteo de contraseña.
+            - redireccionar a la pagina de confirmacion de reseteo de contraseña
+        requerimientos funcionales R1:
+            ~ general :
+                - El formulario DEBE tener los campos "Contraseña" y "Repetir Contraseña".
+                - El formulario DEBE tener un botón "Enviar".
+                - La pagina DEBE tener un link de "¿Ya tienes una cuenta? Inicia Sesión".
+            ~ validaciones :
+                - El campo "Contraseña" debe tener una longitud minima de 8 caracteres y debe incluir una mayuscula, una minuscula, un caracter y un numero.
+                - El campo "Repetir Contraseña" debe tener una longitud minima de 8 caracteres y debe incluir una mayuscula, una minuscula, un caracter y un numero.
+                - El campo "Contraseña" debe coincidir con el campo "Repetir Contraseña".
+            ~ redirecciones :
+                - Si el reseteo de contraseña es valido, debe redireccionar a la pagina de confirmacion de reseteo de contraseña.
+            ~ mensajes :
+                - Si se resetea correctamente se DEBE mostrar un mensaje de confirmación. (mensaje: "Contraseña reseteada correctamente")
+                - Si hay un error de conexión con el servidor, debe mostrar un mensaje de error. (mensaje: "Error de conexión, intentar más t
 }
